@@ -7,7 +7,9 @@ import 'dart:convert';
 import 'package:path/path.dart';
 
 class PaymentUploadPage extends StatefulWidget {
-  const PaymentUploadPage({super.key});
+  final String planType;
+
+  const PaymentUploadPage({super.key, required this.planType});
 
   @override
   _PaymentUploadPageState createState() => _PaymentUploadPageState();
@@ -60,6 +62,8 @@ class _PaymentUploadPageState extends State<PaymentUploadPage> {
         Uri.parse('https://protombook.protechmm.com/api/payments'),
       );
       request.fields['user_id'] = '1'; // Replace with actual user ID
+      request.fields['plan_type'] =
+          widget.planType; // Include planType in the request
       request.files.add(await http.MultipartFile.fromPath(
         'payment_image',
         _image!.path,

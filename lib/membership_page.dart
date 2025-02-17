@@ -50,7 +50,8 @@ class MembershipPage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const PaymentUploadPage()),
+                        builder: (context) =>
+                            PaymentUploadPage(planType: 'Monthly')),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -81,7 +82,8 @@ class MembershipPage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const PaymentUploadPage()),
+                        builder: (context) =>
+                            PaymentUploadPage(planType: 'Yearly')),
                   );
                 },
                 style: ElevatedButton.styleFrom(

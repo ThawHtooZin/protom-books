@@ -117,19 +117,19 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _onBookTap(Map<String, dynamic> book, userId) async {
+  void _onBookTap(Map<String, dynamic> book, String userId) async {
     int bookId = book['id'];
 
     // Send the API request to trigger the view record
     final response = await http.post(
       Uri.parse('https://protombook.protechmm.com/api/books/$bookId/show'),
       body: {
-        'userId': userId.toString(), // Ensure it's a string
+        'userId': userId, // Ensure it's a string
       },
       headers: {
         'Content-Type':
-            'application/x-www-form-urlencoded', // ✅ Required for form data
-        'Accept': 'application/json', // ✅ Ensure Laravel processes it correctly
+            'application/x-www-form-urlencoded', // Required for form data
+        'Accept': 'application/json', // Ensure Laravel processes it correctly
       },
     );
 
@@ -140,11 +140,11 @@ class _HomePageState extends State<HomePage> {
       context,
       MaterialPageRoute(
         builder: (context) => BookDetailsPage(
-          bookTitle: book['title'],
-          author: book['author'],
+          bookTitle: book['title'] ?? 'Unknown Title',
+          author: book['author'] ?? 'Unknown Author',
           coverUrl: 'https://protombook.protechmm.com/${book['cover']}',
-          description: book['description'],
-          price: book['price'].toDouble(),
+          description: book['description'] ?? 'No description available.',
+          price: double.tryParse(book['price'].toString()) ?? 0.0,
           bookId: bookId,
         ),
       ),
@@ -369,7 +369,7 @@ class _HomePageState extends State<HomePage> {
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
-                                    _latestBooks[index]['title'],
+                                    _popularBooks[index]['title'],
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 16,
@@ -539,6 +539,52 @@ class _HomePageState extends State<HomePage> {
                         );
                       },
                     ),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'More Books',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue, // Blueberry theme
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      childAspectRatio: 0.7,
+                    ),
+                    itemCount: _latestBooks.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () =>
+                            _onBookTap(_latestBooks[index], widget.userId),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.network(
+                            'https://protombook.protechmm.com/${_latestBooks[index]['cover']}',
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                color: Colors.grey,
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.broken_image,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
