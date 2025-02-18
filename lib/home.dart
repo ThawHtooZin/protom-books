@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:protom_books/book_list_page.dart';
 import 'package:protom_books/category_detail.dart';
+import 'package:protom_books/category_list_page.dart';
 import 'package:protom_books/profile.dart';
 import 'package:protom_books/search_page.dart';
 import 'package:protom_books/notifications_page.dart';
@@ -107,12 +109,12 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _onCategoryTap(String categoryId) {
+  void _onCategoryTap(String categoryId, String categoryName) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            CategoryBookListPage(categoryId: categoryId.toString()),
+        builder: (context) => CategoryBookListPage(
+            categoryId: categoryId.toString(), categoryName: categoryName),
       ),
     );
   }
@@ -147,6 +149,24 @@ class _HomePageState extends State<HomePage> {
           price: double.tryParse(book['price'].toString()) ?? 0.0,
           bookId: bookId,
         ),
+      ),
+    );
+  }
+
+  void _onBookListTap(String title, String apiUrl) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BookListPage(title: title, apiUrl: apiUrl),
+      ),
+    );
+  }
+
+  void _onCategoryListTap() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const CategoryListPage(),
       ),
     );
   }
@@ -244,10 +264,10 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text(
+                      const Text(
                         'Books Categories',
                         style: TextStyle(
                           fontSize: 18,
@@ -255,8 +275,11 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.blue, // Blueberry theme
                         ),
                       ),
-                      Icon(Icons.arrow_forward,
-                          color: Colors.blue), // Blueberry theme
+                      GestureDetector(
+                        onTap: _onCategoryListTap,
+                        child:
+                            const Icon(Icons.arrow_forward, color: Colors.blue),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 16),
@@ -271,11 +294,12 @@ class _HomePageState extends State<HomePage> {
                       crossAxisSpacing: 10,
                       mainAxisSpacing: 10,
                     ),
-                    itemCount: _categories.length,
+                    itemCount: _categories.length > 4 ? 4 : _categories.length,
                     itemBuilder: (context, index) {
                       return GestureDetector(
-                        onTap: () =>
-                            _onCategoryTap(_categories[index]['id'] as String),
+                        onTap: () => _onCategoryTap(
+                            _categories[index]['id'] as String,
+                            _categories[index]['name'] as String),
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
                           padding: const EdgeInsets.symmetric(
@@ -307,10 +331,10 @@ class _HomePageState extends State<HomePage> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  const Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text(
+                      const Text(
                         'Latest Books',
                         style: TextStyle(
                           fontSize: 18,
@@ -318,8 +342,12 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.blue, // Blueberry theme
                         ),
                       ),
-                      Icon(Icons.arrow_forward,
-                          color: Colors.blue), // Blueberry theme
+                      GestureDetector(
+                        onTap: () => _onBookListTap('Latest Books',
+                            'https://protombook.protechmm.com/api/latest-books'),
+                        child:
+                            const Icon(Icons.arrow_forward, color: Colors.blue),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 16),
@@ -385,10 +413,10 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  const Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text(
+                      const Text(
                         'Popular Books',
                         style: TextStyle(
                           fontSize: 18,
@@ -396,8 +424,12 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.blue, // Blueberry theme
                         ),
                       ),
-                      Icon(Icons.arrow_forward,
-                          color: Colors.blue), // Blueberry theme
+                      GestureDetector(
+                        onTap: () => _onBookListTap('Popular Books',
+                            'https://protombook.protechmm.com/api/popular-books'),
+                        child:
+                            const Icon(Icons.arrow_forward, color: Colors.blue),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 16),
@@ -463,10 +495,10 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  const Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text(
+                      const Text(
                         'Free Books',
                         style: TextStyle(
                           fontSize: 18,
@@ -474,8 +506,12 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.blue, // Blueberry theme
                         ),
                       ),
-                      Icon(Icons.arrow_forward,
-                          color: Colors.blue), // Blueberry theme
+                      GestureDetector(
+                        onTap: () => _onBookListTap('Free Books',
+                            'https://protombook.protechmm.com/api/free-books'),
+                        child:
+                            const Icon(Icons.arrow_forward, color: Colors.blue),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 16),

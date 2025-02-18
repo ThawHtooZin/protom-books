@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:protom_books/book_details.dart';
+import 'book_details.dart';
 
-class CategoryBookListPage extends StatefulWidget {
-  final String categoryId;
-  final String categoryName;
+class BookListPage extends StatefulWidget {
+  final String title;
+  final String apiUrl;
 
-  const CategoryBookListPage(
-      {super.key, required this.categoryId, required this.categoryName});
+  const BookListPage({super.key, required this.title, required this.apiUrl});
 
   @override
-  _CategoryBookListPageState createState() => _CategoryBookListPageState();
+  _BookListPageState createState() => _BookListPageState();
 }
 
-class _CategoryBookListPageState extends State<CategoryBookListPage> {
+class _BookListPageState extends State<BookListPage> {
   List<Map<String, dynamic>> books = [];
 
   @override
@@ -24,8 +23,7 @@ class _CategoryBookListPageState extends State<CategoryBookListPage> {
   }
 
   Future<void> fetchBooks() async {
-    final response = await http.get(Uri.parse(
-        'https://protombook.protechmm.com/api/books/${widget.categoryId}/show'));
+    final response = await http.get(Uri.parse(widget.apiUrl));
 
     if (response.statusCode == 200) {
       List<dynamic> data = json.decode(response.body);
@@ -57,23 +55,15 @@ class _CategoryBookListPageState extends State<CategoryBookListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text(widget.title),
         backgroundColor: Theme.of(context).colorScheme.primary,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          widget.categoryName,
-          style: const TextStyle(color: Colors.white),
-        ),
       ),
-      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: books.isEmpty
             ? const Center(
                 child: Text(
-                  'No books currently in the category',
+                  'No books available',
                   style: TextStyle(color: Colors.white, fontSize: 18),
                 ),
               )

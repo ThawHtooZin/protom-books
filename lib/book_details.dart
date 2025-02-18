@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'audio_player_page.dart';
+import 'membership_page.dart';
 
 class BookDetailsPage extends StatefulWidget {
   final String bookTitle;
@@ -52,20 +53,38 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
   }
 
   void _navigateToAudioPlayer(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AudioPlayerPage(
-          bookId: widget.bookId,
-          bookTitle: widget.bookTitle,
-          coverUrl: widget.coverUrl,
+    if (widget.price == 0) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AudioPlayerPage(
+            bookId: widget.bookId,
+            bookTitle: widget.bookTitle,
+            coverUrl: widget.coverUrl,
+          ),
         ),
-      ),
-    );
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const MembershipPage(),
+        ),
+      );
+    }
   }
 
   void _readPDF() {
-    print('Clicked');
+    if (widget.price == 0) {
+      print('Clicked');
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const MembershipPage(),
+        ),
+      );
+    }
   }
 
   @override
@@ -145,19 +164,14 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          // Handle buy book action
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const MembershipPage(),
+                            ),
+                          );
                         },
-                        child: const Text('Buy Book'),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // Handle read sample action
-                        },
-                        child: const Text('Read Sample'),
+                        child: const Text('Buy Membership to Read'),
                       ),
                     ),
                   ],
